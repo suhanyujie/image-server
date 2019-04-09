@@ -12,12 +12,12 @@ import (
 )
 
 const (
-	UPLOAD_DIR = "uploads"
+	UPLOAD_DIR = "uploads/v1"
 	ListDir    = 0x0001
 )
 
 func main() {
-	const PORT = 8001
+	const PORT = 8005
 	http.HandleFunc("/favicon.ico", safeHandler(showFavicon))
 	http.HandleFunc("/", safeHandler(listHandler))
 	http.HandleFunc("/upload", safeHandler(uploadHandler))
