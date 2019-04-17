@@ -77,6 +77,8 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	if exists := fileExists(imagePath); !exists {
 		http.NotFound(w, r)
 	}
+	// 判断文件的后缀是否是图片文件，如果不是图片则直接下载
+	
 	w.Header().Set("Content-type", "image")
 	http.ServeFile(w, r, imagePath)
 }
