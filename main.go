@@ -92,9 +92,12 @@ func renderHtml(w http.ResponseWriter, path string, locals map[string]interface{
 func safeHandler(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			if err, ok := recover().(error); ok {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				log.Println("WARN:panic in %v-%v", fn, err)
+			err := recover()
+			if err!= nil {
+				if errStr, ok := err.(string); !ok {
+					http.Error(w, errStr, http.StatusInternalServerError)
+					log.Println("WARN:panic in %v-%v", fn, errStr)
+				}
 			}
 		}()
 		fn(w, r)
