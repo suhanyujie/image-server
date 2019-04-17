@@ -3,18 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>文件列表</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 
-<div>
-    <div class="menu">
-        <a href="/upload">图片上传</a>
+<div class="container" style="margin-top:20px;">
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="/">developing...</a>
+            </li>
+        </ul>
     </div>
-    <ol>
-        {{range $.images}}
-            <li><a href="/view?id={{.|urlquery}}">{{.|html}}</a></li>
-        {{end}}
-    </ol>
+    <div class="row" style="margin-top:50px;">
+        <div class="col-sm-1">
+            <div class="menu">
+                <a class="btn btn-outline-primary" href="/upload" role="button">图片上传</a>
+            </div>
+        </div>
+        <div class="col-sm">
+            <ol class="list-group">
+                {{range $.images}}
+                    <li class="list-group-item"><a href="/view?id={{.|urlquery}}">{{.|html}}</a></li>
+                {{end}}
+            </ol>
+        </div>
+    </div>
 </div>
 </body>
 </html>

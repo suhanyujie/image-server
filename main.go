@@ -55,7 +55,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		defer t.Close()
 		_, err = io.Copy(t, f)
 		checkError(err)
-		http.Redirect(w, r, "/view?id="+filename, http.StatusFound)
+		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 
