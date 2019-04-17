@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
+	"path/filepath"
 	"strconv"
 )
 
@@ -78,8 +80,16 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 	// 判断文件的后缀是否是图片文件，如果不是图片则直接下载
-	
-	w.Header().Set("Content-type", "image")
+	_,fileName := filepath.Split(imagePath)
+	fileExt := path.Ext(imagePath)
+	// 不是图片文件，则进行下载操作
+	if fileExt != "png" && fileExt != "jpg" && fileExt != "jpeg" {
+		w.Header().Set("Content-type", "text/plain")
+		w.Header().Set("Content-Disposition", "attachment;fileName="+fileName)
+	} else {
+		w.Header().Set("Content-type", "image")
+	}
+
 	http.ServeFile(w, r, imagePath)
 }
 
