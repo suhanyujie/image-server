@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"image-server/libs"
 	"io"
 	"io/ioutil"
 	"log"
@@ -11,6 +12,7 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -82,12 +84,16 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	// 判断文件的后缀是否是图片文件，如果不是图片则直接下载
 	_,fileName := filepath.Split(imagePath)
 	fileExt := path.Ext(imagePath)
-	// 不是图片文件，则进行下载操作
-	if fileExt != "png" && fileExt != "jpg" && fileExt != "jpeg" {
+	mediatype, err := libs.GetFileMimeType(fileExt)
+	checkError(err)
+	if strings.Contains(imagePath, ".gitignore") {
+		w.Header().Set("Content-type", "text/html")
+	} else if strings.Contains(mediatype,"image") {
+		w.Header().Set("Content-type", mediatype)
+	} else {
+		// 不是图片文件，则进行下载操作
 		w.Header().Set("Content-type", "text/plain")
 		w.Header().Set("Content-Disposition", "attachment;fileName="+fileName)
-	} else {
-		w.Header().Set("Content-type", "image")
 	}
 
 	http.ServeFile(w, r, imagePath)
@@ -108,7 +114,7 @@ func safeHandler(fn http.HandlerFunc) http.HandlerFunc {
 			if err!= nil {
 				if errStr, ok := err.(string); !ok {
 					http.Error(w, errStr, http.StatusInternalServerError)
-					log.Println("WARN:panic in %v-%v", fn, errStr)
+					log.Printf("WARN:panic in %#v-%#v \n", fn, errStr)// %#v ---> a Go-syntax representation of the value
 				}
 			}
 		}()
